@@ -1,33 +1,29 @@
-## Install Elasticsearch with RPM
-
-The RPM for Elasticsearch can be [downloaded from our website](rpm.html#install-rpm) or from our [RPM repository](rpm.html#rpm-repo). It can be used to install Elasticsearch on any RPM-based system such as OpenSuSE, SLES, Centos, Red Hat, and Oracle Enterprise.
-
-![Note](/images/icons/note.png)
-
-RPM install is not supported on distributions with old versions of RPM, such as SLES 11 and CentOS 5. Please see [Install Elasticsearch with `.zip` or `.tar.gz`](zip-targz.html) instead.
-
-The latest stable version of Elasticsearch can be found on the [Download Elasticsearch](/downloads/elasticsearch) page. Other versions can be found on the [Past Releases page](/downloads/past-releases).
+## 使用RPM安装包进行安装 Elasticsearch
+RPM 安装包可以在[官网](rpm.html#install-rpm) 或 [RPM 仓库](rpm.html#rpm-repo) 进行下载. 可以在RPM系列的系统,如OpenSuSE,CentOS,SLES,Red Hat,和Oracle Enterprise等上进行安装.
 
 ![Note](/images/icons/note.png)
 
-Elasticsearch requires Java 8 or later. Use the [official Oracle distribution](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or an open-source distribution such as [OpenJDK](http://openjdk.java.net).
+RPM 安装方式,不再支持老版本的RPM系列系统,如 SLES 11 和 CentOS 5.如果想在这些版本上进行安装请查看 [使用 `.zip` 或 `.tar.gz` 进行安装ES].
 
-### Import the Elasticsearch PGP Key
+最新版本的ES可以在[这里](https://www.elastic.co//downloads/elasticsearch)进行下载, 其他的版本可到[过去版本页面](https://www.elastic.co//downloads/past-releases)进行下载.
 
-We sign all of our packages with the Elasticsearch Signing Key (PGP key [D88E42B4](https://pgp.mit.edu/pks/lookup?op=vindex&search=0xD27D666CD88E42B4), available from <https://pgp.mit.edu>) with fingerprint:
-    
+![Note](/images/icons/note.png)
+
+ES 要求 Java 8 或之后的版. 可以使用 [oracle 官风发行版本](http://www.oracle.com/technetwork/java/javase/downloads/index.html),也可以使用开源的版本,如[OpenJDK](http://openjdk.java.net).
+
+### 导入 ES 的 PGP 密钥
+
+我们使用了密钥对ES进行了签名,其密钥指纹接下,可以在 https://pgp.mit.edu 找到    
     
     4609 5ACC 8548 582C 1A26 99A9 D27D 666C D88E 42B4
 
-Download and install the public signing key:
-    
+下载并安装密钥:
     
     rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
-### Installing from the RPM repository
+### 从 RPM 仓库进行安装
 
-Create a file called `elasticsearch.repo` in the `/etc/yum.repos.d/` directory for RedHat based distributions, or in the `/etc/zypp/repos.d/` directory for OpenSuSE based distributions, containing:
-    
+在 Red Hat 系列的系统上在 `/etc/yum/repos.d/` 文件夹下 创建一个名为 `elasticseach.repo` 文件,或者在 `OpenSuSE` 系列的系统中的 `/etc/zypp/repos.d/` 目录下进行创建该文件. 其内容如下:
     
     [elasticsearch-5.x]
     name=Elasticsearch repository for 5.x packages
@@ -38,83 +34,74 @@ Create a file called `elasticsearch.repo` in the `/etc/yum.repos.d/` directory f
     autorefresh=1
     type=rpm-md
 
-And your repository is ready for use. You can now install Elasticsearch with one of the following commands:
-    
+当 RPM 仓库配置好之后,就可以使用如下的命令进行安装 ES:
     
     sudo yum install elasticsearch <1>
     sudo dnf install elasticsearch <2>
     sudo zypper install elasticsearch <3>
 
-<1>| Use `yum` on CentOS and older Red Hat based distributions.     
+<1>|在 CentOS 或者 老版本的 Red Hat 发行版中使用 `yum` 进行安装 
 ---|---    
-<2>| Use `dnf` on Fedora and other newer Red Hat distributions.     
-<3>| Use `zypper` on OpenSUSE based distributions   
+<2>|在 Fedora 系统和新的 Red Hat 发行版,使用 `dnf` 进行安装 
+<3>|在 OpenSuSE 发行版中,使用 `zypper` 进行安装
   
 ### Download and install the RPM manually
 
-The RPM for Elasticsearch v5.4.3 can be downloaded from the website and installed as follows:
-    
+手动进行下载和安装的命令如下:    
     
     wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.3.rpm
     sha1sum elasticsearch-5.4.3.rpm <1>
     sudo rpm --install elasticsearch-5.4.3.rpm
 
-<1>| Compare the SHA produced by `sha1sum` or `shasum` with the [published SHA](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.3.rpm.sha1).     
+<1>| 使用 [published SHA](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.3.rpm.sha1).进行校验 `sha1sum` 或 `shasum` 
 ---|---  
   
 ![Note](/images/icons/note.png)
 
-On systemd-based distributions, the installation scripts will attempt to set kernel parameters (e.g., `vm.max_map_count`); you can skip this by setting the environment variable `ES_SKIP_SET_KERNEL_PARAMETERS` to `true`.
+在 `systemd` 的发行版系统中,安装脚本会尝试去设置内核参数(如:`vm.max_map_count`),你可以通过设置环境变量`ES_SKIP_SET_KERNEL_PARAMETERS=true`去忽略这个设置.
 
 ### SysV `init` vs `systemd`
 
-Elasticsearch is not started automatically after installation. How to start and stop Elasticsearch depends on whether your system uses SysV `init` or `systemd` (used by newer distributions). You can tell which is being used by running this command:
-    
+ES 在安装后并不会进行自动启动. 如何去启动ES,这个取决于你的系统版本,是使用 `SysV init` 还是 `systemd`(新的发行版),你可以运行如下的命令的进行辨别系统:
     
     ps -p 1
 
-### Running Elasticsearch with SysV `init`
+### 使用 `SysV init` 运行 ES 
 
-Use the `chkconfig` command to configure Elasticsearch to start automatically when the system boots up:
-    
+使用 `chkconfig` 命令进行配置ES当系统启动的时候进行自动启动    
     
     sudo chkconfig --add elasticsearch
 
-Elasticsearch can be started and stopped using the `service` command:
-    
+ES 可以通过 `service` 命令进行启动和停止
     
     sudo -i service elasticsearch start
     sudo -i service elasticsearch stop
 
-If Elasticsearch fails to start for any reason, it will print the reason for failure to STDOUT. Log files can be found in `/var/log/elasticsearch/`.
+如果 ES 启动失败,它会打印标准输出,并记录日志在 `/var/log/elasticsearch/`.
 
-### Running Elasticsearch with `systemd`
+### 使用 `systemd` 运行 ES
 
-To configure Elasticsearch to start automatically when the system boots up, run the following commands:
-    
+配置ES当系统启动的时候进行自动启动     
     
     sudo /bin/systemctl daemon-reload
     sudo /bin/systemctl enable elasticsearch.service
 
-Elasticsearch can be started and stopped as follows:
-    
+ES 可以通过如下的命令进行启动和暂停    
     
     sudo systemctl start elasticsearch.service
     sudo systemctl stop elasticsearch.service
 
-These commands provide no feedback as to whether Elasticsearch was started successfully or not. Instead, this information will be written in the log files located in `/var/log/elasticsearch/`.
+这些命令并没有提供ES启动成功或失败的信息回馈.只会在 `/var/log/elasticsearch/` 文件夹下进行输出日志.
 
-By default the Elasticsearch service doesn’t log information in the `systemd` journal. To enable `journalctl` logging, the `--quiet` option must be removed from the `ExecStart` command line in the `elasticsearch.service` file.
+默认地,`systemed` 并不会记录ES服务的日志.可以通过在服务文件 `elasticsearch.searvice` 中在 `ExecStart` 命令后移除 `--quit` 参数
 
-When `systemd` logging is enabled, the logging information are available using the `journalctl` commands:
+当启用 `systemd` 日志, 可以使用 `journalctl` 命令进行查看其日志信息.
 
-To tail the journal:
-    
+`tail` 其日志命令如下:
     
     sudo journalctl -f
 
-To list journal entries for the elasticsearch service:
-    
+列出 ES 相关的日志信息
     
     sudo journalctl --unit elasticsearch
 
